@@ -3,7 +3,9 @@ import maplibregl from "maplibre-gl";
 import axios from "axios";
 import { useFetchData } from '../../hooks/useFetchData'
 
-import "maplibre-gl/dist/maplibre-gl.css";
+import "maplibre-theme/icons.lucide.css";
+import "maplibre-theme/modern.css";
+import './StoryMap.scss'
 import styles from './StoryMap.module.scss'
 
 const STARTING_POINT = {
@@ -14,8 +16,8 @@ const STARTING_POINT = {
 };
 
 const MAX_BOUNDS = [
-    [10.9297944, 15.2662687], // Southwest corner (minLng, minLat)
-    [45.99275, 65.9618] // Northeast corner (maxLng, maxLat)
+  [10.0, 10.0], // Southwest corner (minLng, minLat)
+  [75.0, 65.0] // Northeast corner (maxLng, maxLat)
 ];
 
 const MAP_SETTINGS ={
@@ -26,11 +28,11 @@ const MAP_SETTINGS ={
     attributionControl: false,
     failIfMajorPerformanceCaveat: true,
     preserveDrawingBuffer: true,
-    projection: 'winkelTripel',
+    projection: 'lambertConformalConic',
     fadeDuration: 700,
     renderWorldCopies: false,
     keyboard: true,
-    // maxBounds: MAX_BOUNDS
+    maxBounds: MAX_BOUNDS
 }  
 
 const StoryMap = () => {
@@ -42,7 +44,7 @@ const StoryMap = () => {
         
         const map = new maplibregl.Map({
             container: mapRef.current,
-            style: '/layers/custom_style.json',
+            style: '/layers/basemap.json',
             ...STARTING_POINT,
             ...MAP_SETTINGS
         });
@@ -58,7 +60,12 @@ const StoryMap = () => {
         map.addControl(new maplibregl.FullscreenControl());
 
         map.on('load', () => {
-            addGeoPoint(map, data)
+            addGeoPolygon(map, data)
+            addGeoPoint(map, data);
+        })
+
+        map.on('move', () => {
+          console.log(map.getBounds())
         })
 
         return () => map.remove()
@@ -120,13 +127,22 @@ async function addGeoPoint(map, geojson) {
     
           map.addLayer({
             id: `${id}-layer`,
-            type: "circle",
+            type: "heatmap",
             source: id,
             layout: {},
             paint: {
-                'circle-color': '#8CCFFF',
-                'circle-radius': 6,
-                'circle-opacity': 1
+              "heatmap-radius": 30, // Heatmap point radius
+              "heatmap-weight": 1, // Weight of points
+              "heatmap-intensity": 1, // Intensity scaling
+              "heatmap-opacity": 1, // Opacity
+              "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0, "rgba(0,0,255,0)",
+                0.5, "blue",
+                1, "red"
+              ] // Gradient color mapping
             },
           });
         }
@@ -137,15 +153,17 @@ async function addGeoPoint(map, geojson) {
 }
 
 async function addGeoPolygon(map, geojson) {
-    if (!map || !geojson || !geojson.id || !geojson.layer) {
+    if (!map || !geojson) {
       console.error("Invalid GeoJSON data or map instance.");
       return;
     }
 
     try {
-        const { id, layer } = geojson;
-        const response = await axios.get(`/layers/${layer}`);
+        let { id, boundary95_layer } = geojson[0];
+        console.log(id, boundary95_layer)
+        const response = await axios.get(`/layers/${boundary95_layer}`);
         const data = response.data;
+        id += '-polygon'
     
         if (!map.getSource(id)) {
           map.addSource(id, { type: "geojson", data });
@@ -154,9 +172,14 @@ async function addGeoPolygon(map, geojson) {
             id: `${id}-layer`,
             type: "fill",
             source: id,
+            layout: {
+              "visibility": "visible" // visible or none
+            },
             paint: {
-              "fill-color": "#0080ff",
-              "fill-opacity": 0.6,
+              "fill-color": "#6b5b38",
+              "fill-outline-color": '#5a3e1b',
+              "fill-opacity": 1,
+              "fill-antialias": true
             },
           });
         }

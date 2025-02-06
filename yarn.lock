@@ -2159,6 +2159,11 @@ maplibre-gl@^5.1.0:
     tinyqueue "^3.0.0"
     vt-pbf "^3.1.3"
 
+maplibre-theme@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/maplibre-theme/-/maplibre-theme-0.2.0.tgz#f8de264cbbd31c65b1b1f691651eb00c1ef94b27"
+  integrity sha512-yeIc+Wwv53DyPk3yixHMa4a8w6Knl0+aEMUK0I8PBkAWY8dDk4oMT+l9soiKTf01fEMv4yvcxxey03UoX3QMWQ==
+
 math-intrinsics@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/math-intrinsics/-/math-intrinsics-1.1.0.tgz#a0dd74be81e2aa5c2f27e65ce283605ee4e2b7f9"

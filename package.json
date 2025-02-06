@@ -17,6 +17,7 @@
     "i18next": "^24.2.2",
     "lightgallery": "^2.8.2",
     "maplibre-gl": "^5.1.0",
+    "maplibre-theme": "^0.2.0",
     "plotteus": "^1.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

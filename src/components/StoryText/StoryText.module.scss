@@ -9,6 +9,29 @@
     text-align: center;
 }
 
+.intro {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &::after {
+        position: absolute;
+        bottom: 0;
+        left: -1rem;
+        right: 0;
+        content: "";
+        height: 1px;
+        width: calc(102.2% + 1rem);
+        background: linear-gradient(
+            to right,
+            rgba($accent-color, 1) 0%,
+            rgba($accent-color, 0) 40%,
+            rgba($accent-color, 0) 60%,
+            rgba($accent-color, 1) 100%
+        );
+    }
+}
+
 .textImg {
     display: flex;
     justify-content: center;
