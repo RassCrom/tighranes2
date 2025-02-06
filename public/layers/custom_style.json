@@ -1,0 +1,17 @@
+{
+    "layers": [
+        {
+            "id": "background",
+            "type": "background",
+            "paint": {
+                "background-color": "#320505"
+            },
+            "layout": {
+                "visibility": "visible"
+            },
+            "maxzoom": 19
+        }
+    ],
+    "sources": {},
+    "version": 8
+}

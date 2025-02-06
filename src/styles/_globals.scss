@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@100..900&display=swap');
+
+*,
+*::after,
+*::before,
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+html, body {
+  font-family: 'Montserrat', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: $main-size;
+  color: $font-color;
+  line-height: 1.65;
+
+  background-color: $bg-color;
+
+  scroll-behavior: smooth;
+}

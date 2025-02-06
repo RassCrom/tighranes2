@@ -1,0 +1,52 @@
+h1 {
+    font-family: "Cinzel", serif;
+    font-size: $heading-size;
+    font-weight: bold;
+    color: $heading-color;
+    line-height: 1.2;
+}
+
+h2, h3, h4, h5, h6 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: $subheading-size;
+    font-weight: 800;
+    color: $heading-color;
+    line-height: 1.2;
+}
+
+a {
+    position: relative;
+
+    font-size: $main-size;
+    color: $accent-color;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: color 0.4s ease-in-out;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 100%;
+        height: 2px;
+        background-color: $accent-color;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease-in-out;
+    }
+
+    &:hover {
+        color: darken($accent-color, 15%);
+        
+        &::after {
+            transform: scaleX(.5);
+        }
+    }
+
+    &:active {
+        color: darken($accent-color, 25%);
+    }
+}
