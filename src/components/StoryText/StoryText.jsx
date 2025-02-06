@@ -1,5 +1,6 @@
 import styles from './StoryText.module.scss';
 import ArmFlag from '/public/images/arm-flag.png';
+import FloatingArrow from '/public/images/spear-arr.png';
 
 const StoryText = () => {
   return (
@@ -19,7 +20,7 @@ const StoryText = () => {
         </p>
       </div>
       <div className={styles.text}>
-        <img className={styles.floatingArrow} src="/public/images/spear-arr.png" alt="arrow down" />
+        <img className={styles.floatingArrow} src={FloatingArrow} alt="arrow down" />
       </div>
     </div>
   );

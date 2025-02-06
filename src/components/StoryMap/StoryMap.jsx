@@ -35,14 +35,14 @@ const MAP_SETTINGS ={
 
 const StoryMap = () => {
     const mapRef = useRef(null);
-    const { data } = useFetchData('public/data/layers_chapter.json');
+    const { data } = useFetchData('/public/data/layers_chapter.json');
 
     useEffect(() => {
         if (!data) return
         
         const map = new maplibregl.Map({
             container: mapRef.current,
-            style: 'public/layers/custom_style.json',
+            style: '/public/layers/custom_style.json',
             ...STARTING_POINT,
             ...MAP_SETTINGS
         });
