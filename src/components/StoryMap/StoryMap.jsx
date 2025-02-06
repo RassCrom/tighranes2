@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import axios from "axios";
 import { useFetchData } from '../../hooks/useFetchData'
@@ -35,14 +35,14 @@ const MAP_SETTINGS ={
 
 const StoryMap = () => {
     const mapRef = useRef(null);
-    const { data } = useFetchData('/public/data/layers_chapter.json');
+    const { data } = useFetchData('/data/layers_chapter.json');
 
     useEffect(() => {
         if (!data) return
         
         const map = new maplibregl.Map({
             container: mapRef.current,
-            style: '/public/layers/custom_style.json',
+            style: '/layers/custom_style.json',
             ...STARTING_POINT,
             ...MAP_SETTINGS
         });
@@ -77,7 +77,7 @@ async function addGeoLine(map, geojson) {
 
     try {
         const { id, layer } = geojson;
-        const response = await axios.get(`/src/layers/${layer}`);
+        const response = await axios.get(`/layers/${layer}`);
         const data = response.data;
     
         if (!map.getSource(id)) {
@@ -144,7 +144,7 @@ async function addGeoPolygon(map, geojson) {
 
     try {
         const { id, layer } = geojson;
-        const response = await axios.get(`/src/layers/${layer}`);
+        const response = await axios.get(`/layers/${layer}`);
         const data = response.data;
     
         if (!map.getSource(id)) {
