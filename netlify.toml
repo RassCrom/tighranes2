@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"  # Adjust to your output folder
+
+[context.production] # For main branch
+  command = "npm run build"
+  environment = { REACT_APP_API_URL = "https://api.production.com" }
+
+[context.dev] # For dev branch
+  command = "npm run build"
+  environment = { REACT_APP_API_URL = "https://api.dev.com" }
+
+[context.deploy-preview] # For PRs
+  command = "npm run build"
