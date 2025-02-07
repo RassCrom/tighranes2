@@ -21,7 +21,8 @@
         right: 0;
         content: "";
         height: 1px;
-        width: calc(102.2% + 1rem);
+        width: calc(103.5% + 1rem);
+        z-index: 6;
         background: linear-gradient(
             to right,
             rgba($accent-color, 1) 0%,
@@ -29,6 +30,20 @@
             rgba($accent-color, 0) 60%,
             rgba($accent-color, 1) 100%
         );
+    }
+}
+
+
+@media screen and (max-width: 905px) {
+    .textOuter {
+        width: 100%;
+        opacity: 1;
+    }
+
+    .intro {
+        &::after {
+            width: calc(103% + 1rem);
+        }
     }
 }
 

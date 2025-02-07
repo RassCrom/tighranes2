@@ -64,9 +64,9 @@ const StoryMap = () => {
             addGeoPoint(map, data);
         })
 
-        map.on('move', () => {
-          console.log(map.getBounds())
-        })
+        // map.on('move', () => {
+        //   console.log(map.getBounds())
+        // })
 
         return () => map.remove()
     }, [data])

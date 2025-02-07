@@ -1,8 +1,23 @@
 .map__outer {
     width: 50%;
+    position: relative;
+    z-index: 7;
 }
 
 .mapContainer {
     width: 100%;
     height: 100%;
+}
+
+@media screen and (max-width: 905px) {
+    .map__outer {
+        position: absolute;
+        display: none;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        opacity: 0;
+        z-index: 6
+    }
 }
