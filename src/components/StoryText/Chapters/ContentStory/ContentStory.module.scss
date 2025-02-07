@@ -1,0 +1,44 @@
+@use '@styles/variables' as *;
+
+.contentTable {
+    margin: 7rem 0 7rem;
+    position: relative;
+
+    &::after {
+        position: absolute;
+        bottom: -7rem;
+        left: -1rem;
+        right: 0;
+        content: "";
+        height: 1px;
+        width: calc(103.5% + 1rem);
+        z-index: 10;
+        background: linear-gradient(to right, #eec06a 0%, rgba(238, 192, 106, 0) 40%, rgba(238, 192, 106, 0) 60%, #eec06a 100%);
+    }
+}
+
+.headingContent {
+    font-size: clamp(1.8rem, 1.4vw, 2rem);
+    text-transform: uppercase;
+}
+
+.contentInner {
+    margin-top: 3rem;
+}
+
+.listContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.listItem {
+    display: flex;
+    gap: 1rem;
+    color: $accent-color;
+}
+
+.itemLinksNumber {
+    opacity: .6;
+}

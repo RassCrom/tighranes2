@@ -9,7 +9,7 @@ h1 {
 h2, h3, h4, h5, h6 {
     font-family: "Cormorant Garamond", serif;
     font-size: $subheading-size;
-    font-weight: 800;
+    font-weight: 600;
     color: $heading-color;
     line-height: 1.2;
 }
@@ -29,24 +29,29 @@ a {
         content: "";
         position: absolute;
         left: 0;
-        bottom: -2px;
+        bottom: -1px;
         width: 100%;
-        height: 2px;
+        height: 1px;
         background-color: $accent-color;
         transform: scaleX(0);
         transform-origin: left;
-        transition: transform 0.4s ease-in-out;
+        transition: transform 0.5s ease-in-out;
     }
 
     &:hover {
         color: darken($accent-color, 15%);
         
         &::after {
-            transform: scaleX(.5);
+            transform: scaleX(1);
         }
     }
 
     &:active {
         color: darken($accent-color, 25%);
     }
+}
+
+li {
+    list-style: none;
+    text-transform: uppercase;
 }
