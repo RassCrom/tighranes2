@@ -1,0 +1,41 @@
+@use '@styles/variables' as *;
+
+.storyHeading {
+    margin-top: 5rem;
+}
+
+.storyHeadingNumber {
+    position: relative;
+    display: inline-block;
+    color: $accent-color;
+    font-size: clamp(1.2rem, 1.7vw, 1.8rem);
+
+    &::before,
+    &::after {
+        position: absolute;
+        content: '';
+        top: 50%;
+        width: 60px;
+        transform: translateY(-50%);
+        height: 1px;
+        background: $gradient-line-one;
+    }
+
+    &::before {
+        left: 1rem;
+    }
+
+    &::after {
+        right: 1rem;
+    }
+}
+
+.storySubheading {
+    margin-top: 0.5rem;
+}
+
+.storyHeadingCaption {
+    margin-top: 1rem;
+    font-weight: 300;
+    color: $secondary-color;
+}

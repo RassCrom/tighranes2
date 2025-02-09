@@ -1,12 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import axios from "axios";
-import { useFetchData } from '../../hooks/useFetchData'
+import proj4 from "proj4";
+import { useFetchData } from '../../hooks/useFetchData';
 
 import "maplibre-theme/icons.lucide.css";
 import "maplibre-theme/modern.css";
-import './StoryMap.scss'
-import styles from './StoryMap.module.scss'
+import './StoryMap.scss';
+import styles from './StoryMap.module.scss';
+
+proj4.defs("EPSG:9802", "+proj=lcc +lat_1=50 +lat_2=52 +lat_0=51 +lon_0=69 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
 
 const STARTING_POINT = {
     center: [38.16, 40.35],
@@ -20,28 +23,34 @@ const MAX_BOUNDS = [
   [75.0, 65.0] // Northeast corner (maxLng, maxLat)
 ];
 
-const MAP_SETTINGS ={
+const MAP_SETTINGS = {
     minZoom: 4,
     maxZoom: 19,
     rollEnabled: false,
-    hash: false,
     attributionControl: false,
-    failIfMajorPerformanceCaveat: true,
     preserveDrawingBuffer: true,
-    projection: 'lambertConformalConic',
+    projection: {
+      name: 'custom',
+      custom: {
+          forward: (lnglat) => proj4("EPSG:4326", "EPSG:9802", lnglat),
+          inverse: (coord) => proj4("EPSG:9802", "EPSG:4326", coord),
+      },
+    },
     fadeDuration: 700,
     renderWorldCopies: false,
     keyboard: true,
+    doubleClickZoom: true,
     maxBounds: MAX_BOUNDS
-}  
+};
 
 const StoryMap = () => {
     const mapRef = useRef(null);
     const { data } = useFetchData('/data/layers_chapter.json');
+    const [scrollPosition, setScrollPosition] = useState(0);
 
     useEffect(() => {
-        if (!data) return
-        
+        if (!data) return;
+
         const map = new maplibregl.Map({
             container: mapRef.current,
             style: '/layers/basemap.json',
@@ -56,24 +65,43 @@ const StoryMap = () => {
               showZoom: true,
               showCompass: true,
             })
-          );
+        );
         map.addControl(new maplibregl.FullscreenControl());
 
         map.on('load', () => {
-            addGeoPolygon(map, data)
+          // TODO add id to the params
+            addGeoPolygon(map, data);
             addGeoPoint(map, data);
-        })
+        });
 
-        // map.on('move', () => {
-        //   console.log(map.getBounds())
-        // })
+        const handleScroll = () => {
+            const position = window.scrollY;
+            setScrollPosition(position);
 
-        return () => map.remove()
-    }, [data])
+            if (position > 500 && position < 1000) {
+                map.setLayoutProperty('prologue-polygon-layer', 'visibility', 'none');
+                map.setLayoutProperty('prologue-layer', 'visibility', 'visible');
+            } else if (position > 1000) {
+                map.setLayoutProperty('prologue-layer', 'visibility', 'none');
+            } else {
+                map.setLayoutProperty('prologue-polygon-layer', 'visibility', 'visible');
+                map.setLayoutProperty('prologue-layer', 'visibility', 'none');
+            }
+        };
 
-    return (<div className={styles.map__outer}>
-        <div ref={mapRef} className={`map-style ${styles.mapContainer}`}></div>
-    </div>);
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            map.remove();
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [data]);
+
+    return (
+        <div className={styles.map__outer}>
+            <div ref={mapRef} className={`map-style ${styles.mapContainer}`}></div>
+        </div>
+    );
 };
 
 async function addGeoLine(map, geojson) {
@@ -94,11 +122,12 @@ async function addGeoLine(map, geojson) {
             id: `${id}-layer`,
             type: "line",
             source: id,
-            'layout': {
+            layout: {
                 'line-join': 'round',
-                'line-cap': 'round'
+                'line-cap': 'round',
+                'visibility': 'none' // По умолчанию слой отключен
             },
-            'paint': {
+            paint: {
                 'line-color': '#888',
                 'line-width': 8
             }
@@ -106,12 +135,12 @@ async function addGeoLine(map, geojson) {
         }
     } catch (error) {
         console.error("Error loading GeoJSON:", error);
-        return
+        return;
     }
 }
 
 async function addGeoPoint(map, geojson) {
-    if (!map && !geojson) {
+    if (!map || !geojson) {
         console.error("Invalid GeoJSON data or map instance.");
         return;
     }
@@ -120,7 +149,6 @@ async function addGeoPoint(map, geojson) {
         const { id, city_layer } = geojson[0];
         const response = await axios.get(`/layers/${city_layer}`);
         const data = response.data;
-        console.log(geojson, id, city_layer)
     
         if (!map.getSource(id)) {
           map.addSource(id, { type: "geojson", data });
@@ -129,12 +157,14 @@ async function addGeoPoint(map, geojson) {
             id: `${id}-layer`,
             type: "heatmap",
             source: id,
-            layout: {},
+            layout: {
+                'visibility': 'none' // По умолчанию слой отключен
+            },
             paint: {
-              "heatmap-radius": 30, // Heatmap point radius
-              "heatmap-weight": 1, // Weight of points
-              "heatmap-intensity": 1, // Intensity scaling
-              "heatmap-opacity": 1, // Opacity
+              "heatmap-radius": 30,
+              "heatmap-weight": 1,
+              "heatmap-intensity": 1,
+              "heatmap-opacity": 1,
               "heatmap-color": [
                 "interpolate",
                 ["linear"],
@@ -142,13 +172,13 @@ async function addGeoPoint(map, geojson) {
                 0, "rgba(0,0,255,0)",
                 0.5, "blue",
                 1, "red"
-              ] // Gradient color mapping
+              ]
             },
           });
         }
     } catch (error) {
         console.error("Error loading GeoJSON:", error);
-        return
+        return;
     }
 }
 
@@ -160,10 +190,10 @@ async function addGeoPolygon(map, geojson) {
 
     try {
         let { id, boundary95_layer } = geojson[0];
-        console.log(id, boundary95_layer)
         const response = await axios.get(`/layers/${boundary95_layer}`);
         const data = response.data;
-        id += '-polygon'
+        id += '-polygon';
+        console.log(`${id}-layer`)
     
         if (!map.getSource(id)) {
           map.addSource(id, { type: "geojson", data });
@@ -173,7 +203,7 @@ async function addGeoPolygon(map, geojson) {
             type: "fill",
             source: id,
             layout: {
-              "visibility": "visible" // visible or none
+                "visibility": "visible" // По умолчанию слой включен
             },
             paint: {
               "fill-color": "#6b5b38",
@@ -185,9 +215,8 @@ async function addGeoPolygon(map, geojson) {
         }
     } catch (error) {
         console.error("Error loading GeoJSON:", error);
-        return
+        return;
     }
-
 }
 
 export default StoryMap;

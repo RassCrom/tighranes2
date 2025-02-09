@@ -1,0 +1,32 @@
+@use '@styles/variables' as *;
+
+.img {
+    max-width: 200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.img img {
+    width: 100%;
+    height: auto;
+}
+
+.imgCaption {
+    margin-top: .5rem;
+    font-size: $caption-size;
+    opacity: 0.5;
+}
+  
+.img a:hover {
+    all: unset;
+    cursor: pointer;
+
+    &:hover {
+        &::after {
+            transform: scaleX(0);
+        }
+    }
+
+}

@@ -4,6 +4,19 @@ $accent-color: #EEC06A;
 $heading-color: #FFDDD2;
 $secondary-color: #6A4C36;
 $font-color: #F7EFE5;
+$gradient-line-one: linear-gradient(
+    to right,
+    rgba($accent-color, 0) 0%,
+    rgba($accent-color, 1) 50%,
+    rgba($accent-color, 0) 100%
+);
+$gradient-line-two: linear-gradient(
+    to right,
+    rgba($accent-color, 1) 0%,
+    rgba($accent-color, 0) 40%,
+    rgba($accent-color, 0) 60%,
+    rgba($accent-color, 1) 100%
+);
 
 // Spacing
 $spacing-small: 8px;
@@ -11,7 +24,7 @@ $spacing-medium: 16px;
 $spacing-large: 32px;
 
 // Font Size
-$main-size: clamp(.9rem, 1.5vw, 1rem);
+$main-size: clamp(1rem, 1.5vw, 1.2rem);
 $subheading-size: clamp(1.5rem, 2vw, 2rem);
 $heading-size: clamp(2rem, 3vw, 2.5rem);
-$caption-size: clamp(.5rem, 1vw, .7rem);
+$caption-size: clamp(.7rem, 1vw, .9rem);

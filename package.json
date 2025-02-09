@@ -19,6 +19,7 @@
     "maplibre-gl": "^5.1.0",
     "maplibre-theme": "^0.2.0",
     "plotteus": "^1.5.2",
+    "proj4": "^2.15.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-toastify": "^11.0.3",

@@ -47,11 +47,57 @@ a {
     }
 
     &:active {
-        color: darken($accent-color, 25%);
+        color: scale-color($accent-color, $lightness: -25%);
     }
 }
 
 li {
     list-style: none;
     text-transform: uppercase;
+}
+
+blockquote {
+    max-width: 46rem !important;
+    margin: 2rem auto !important;
+    padding: 2rem 0 !important;
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-family: "Cormorant Garamond", serif;
+    font-size: $subheading-size;
+    color: $accent-color;
+    justify-content: center;
+
+    img {
+        padding-right: 1rem;
+    }
+
+    &::after, &::before {
+        position: absolute;
+        content: "";
+        left: 0;
+        right: 0;
+        height: 1px;
+        width: 100%;
+        background: $gradient-line-one;
+    }
+
+    &::before {
+        top: 0.1px;
+    }
+
+    &::after {
+        bottom: 0;
+    }
+}
+
+cite {
+    display: block;
+    position: absolute;
+    bottom: 1rem;
+    right: 0;
+    font-family: 'Montserrat';
+    font-weight: 200;
+    font-size: $caption-size;
+    opacity: 0.4;
 }

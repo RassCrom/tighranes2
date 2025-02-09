@@ -6,14 +6,14 @@
 
     &::after {
         position: absolute;
-        bottom: -7rem;
+        bottom: 0;
         left: -1rem;
         right: 0;
         content: "";
         height: 1px;
         width: calc(103.5% + 1rem);
         z-index: 10;
-        background: linear-gradient(to right, #eec06a 0%, rgba(238, 192, 106, 0) 40%, rgba(238, 192, 106, 0) 60%, #eec06a 100%);
+        background: $gradient-line-two;
     }
 }
 
@@ -24,6 +24,7 @@
 
 .contentInner {
     margin-top: 3rem;
+    padding-bottom: 7rem;
 }
 
 .listContent {

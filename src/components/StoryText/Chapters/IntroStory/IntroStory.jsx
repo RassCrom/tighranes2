@@ -1,4 +1,5 @@
 import styles from './IntroStory.module.scss'
+import storyStyles from '../../StoryText.module.scss'
 import ArmFlag from '/images/arm-flag.png';
 import FloatingArrow from '/images/spear-arr.png';
 
@@ -15,12 +16,12 @@ const IntroStory = () => {
           </div>
           <h1 className={styles.cardTitle}>Tigranes the Great</h1>
         </div>
-        <div className={styles.text}>
+        <div className={storyStyles.text}>
           <p className={styles.prelude}>
             Amid the cradle of ancient civilizations, the Kingdom of Armenia, under the reign of Tigranes the Great, ascended to unparalleled glory, blending cultural brilliance, military might, and enduring legacy.
           </p>
         </div>
-        <div className={styles.text}>
+        <div className={storyStyles.text}>
           <img className={styles.floatingArrow} src={FloatingArrow} alt="arrow down" />
         </div>
       </div>

@@ -14,13 +14,7 @@
         height: 1px;
         width: calc(103.5% + 1rem);
         z-index: 10;
-        background: linear-gradient(
-            to right,
-            rgba($accent-color, 1) 0%,
-            rgba($accent-color, 0) 40%,
-            rgba($accent-color, 0) 60%,
-            rgba($accent-color, 1) 100%
-        );
+        background: $gradient-line-two;
     }
 }
 
@@ -47,13 +41,6 @@
     height: auto;
 }
 
-.text {
-    max-width: 30rem;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
 .textCard {
     max-width: 37rem;
     text-align: center;
@@ -70,12 +57,7 @@
         content: '';
         height: 1px;
         width: 100%;
-        background: linear-gradient(
-            to right,
-            rgba($accent-color, 0) 0%,
-            rgba($accent-color, 1) 50%,
-            rgba($accent-color, 0) 100%,
-        );
+        background: $gradient-line-one;
     }
 }
 
@@ -97,12 +79,7 @@
         content: '';
         width: 30%;
         height: 1px;
-        background: linear-gradient(
-            to right,
-            rgba($accent-color, 0) 0%,
-            rgba($accent-color, 1) 50%,
-            rgba($accent-color, 0) 100%,
-        );
+        background: $gradient-line-one;
     }
     
     &::after {
@@ -113,12 +90,7 @@
         content: '';
         width: 30%;
         height: 1px;
-        background: linear-gradient(
-            to right,
-            rgba($accent-color, 0) 0%,
-            rgba($accent-color, 1) 50%,
-            rgba($accent-color, 0) 100%,
-        );
+        background: $gradient-line-one;
     }
 }
 
