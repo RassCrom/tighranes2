@@ -1,0 +1,38 @@
+@use '@styles/variables' as *;
+
+.author {
+
+    .footerHeading {
+        text-align: start;
+        margin-bottom: 2rem;
+    }
+
+    .footerHeading, .footerSubheading, a {
+        color: $bg-color;
+    }
+
+
+    .footerText {
+        display: flex;
+        flex-direction: column;        
+        justify-content: flex-start;
+
+        .footerTextLinks {
+            display: flex;
+            gap: .5rem;
+            flex-direction: column;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+
+            .footerSubheading {
+                font-style: italic;
+            }
+
+            p {
+                font-family: "Cormorant Garamond", serif;
+                color: $bg-color;
+                font-weight: 500;
+            }
+        }
+    }
+}

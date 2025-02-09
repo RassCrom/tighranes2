@@ -1,0 +1,53 @@
+@use '@styles/variables' as *;
+
+.ref {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 10;
+    // top: 8rem;
+    .footerHeading, .footerSubheading, a {
+        color: $bg-color;
+    }
+
+    .footerHeading {
+        margin-bottom: 2rem;
+    }
+
+    .footerText {
+        display: flex;
+        flex-direction: column;
+
+        .footerTextLinks {
+            display: flex;
+            gap: 4rem;
+            margin-bottom: 3rem;
+
+            .footerSubheading {
+                font-style: italic;
+            }
+
+            ul {
+                display: flex;
+                padding-top: .3rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+
+                li {
+                    a {
+                        text-transform: none;
+                        color: $bg-color;
+                        &::after {
+                            background-color: $bg-color;
+                        }
+                        &:hover {
+                            color: darken($bg-color, 15%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
