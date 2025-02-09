@@ -1,7 +1,7 @@
 import styles from './FirstStory.module.scss';
 import storyStyles from '../../StoryText.module.scss'
 import StoryHeading from '../../StoryHeading/StoryHeading';
-import ImgBlock from '../../blocks/ImgBlock';
+import ImgBlock from '../../Blocks/ImgBlock';
 import QuoteBlock from '../../Blocks/QuoteBlock';
 
 const FirstStory = () => {
