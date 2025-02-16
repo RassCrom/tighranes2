@@ -74,7 +74,7 @@ const handleScroll = () => {
       map.flyTo({ bearing: 0, zoom: 5, pitch: 0 });
       map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 1);
     } else {
-      map.flyTo({ bearing: 90, zoom: 6, pitch: 20 });
+      map.flyTo({ bearing: 100, zoom: 6, pitch: 20 });
       map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
     }
 
