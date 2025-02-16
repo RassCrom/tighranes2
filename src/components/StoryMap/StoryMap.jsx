@@ -69,13 +69,55 @@ const handleScroll = () => {
     isFlying = true;
     const position = window.scrollY;
     setScrollPosition(position);
+    console.log(position)
 
-    if (position < 1000) {
-      map.flyTo({ bearing: 0, zoom: 5, pitch: 0 });
-      map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 1);
-    } else {
-      map.flyTo({ bearing: 100, zoom: 6, pitch: 20 });
+    if (position < 1100) {
       map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+    } else if (position >= 1100 && position <= 6090) {
+      map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 1);
+      map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+    } else if (position > 6090 && position <= 8156) {
+      map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 1);
+      map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 1);
+      map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+    } else if (position > 8156 && position <= 9500) {
+      map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 1);
+      map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 1);
+      map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+    } else if (position > 9500 && position <= 11490) {
+      map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 1);
+      map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 1);
+      map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', );
+    } else if (position > 11490 && position <= 13000) {
+      map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 1);
+      map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 1);
+      map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+    } else if (position > 13000 && position <= 14500) {
+      map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 1);
+      map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 1);
+      map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+    } else if (position > 14500 && position <= 16901) {
+      map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+      map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 1);
+      map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+    } else if (position > 16901 && position <= 18000) {
+      map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+      map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 1);
     }
 
     setTimeout(() => (isFlying = false), 1500); // Prevent rapid flyTo calls
@@ -101,6 +143,7 @@ async function addGeoLine(map, layer) {
   try {
     const response = await axios.get(`/layers/${layer.geojsonFile}`);
     const data = response.data;
+    console.log(`${layer.id}-layer`)
     if (!map.getSource(layer.id)) {
       map.addSource(layer.id, { type: "geojson", data });
       map.addLayer({

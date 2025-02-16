@@ -16,7 +16,7 @@ const Author = () => {
               <p>spatial data, text editor, data collection</p>
           </div>
           <div className={styles.footerTextLinks}>
-              <h2 className={styles.footerSubheading}>Darina</h2>
+              <h2 className={styles.footerSubheading}>Darina Uspanova</h2>
               <p>Infographic</p>
           </div>
       </div>
