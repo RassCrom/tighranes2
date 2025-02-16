@@ -21,7 +21,7 @@
 
         .footerTextLinks {
             display: flex;
-            gap: 4rem;
+            gap: 2rem;
             margin-bottom: 3rem;
 
             .footerSubheading {
@@ -33,7 +33,8 @@
                 padding-top: .3rem;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1rem;
+                gap: .5rem;
+                text-align: start;
 
                 li {
                     a {

@@ -1,0 +1,29 @@
+[
+    {
+      "polygons": [
+        { "id": "great_armenia_borders_1", "geojsonFile": "GREAT_ARMENIA_BORDERS_1.geojson", "fill-color": "#ff0000", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_2", "geojsonFile": "GREAT_ARMENIA_BORDERS_2.geojson", "fill-color": "#ff4500", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_3_1", "geojsonFile": "GREAT_ARMENIA_BORDERS_3_1.geojson", "fill-color": "#ffa500", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_3_2", "geojsonFile": "GREAT_ARMENIA_BORDERS_3_2.geojson", "fill-color": "#ff8c00", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_3_3", "geojsonFile": "GREAT_ARMENIA_BORDERS_3_3.geojson", "fill-color": "#ff7f50", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_3_4", "geojsonFile": "GREAT_ARMENIA_BORDERS_3_4.geojson", "fill-color": "#ffd700", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_3_5", "geojsonFile": "GREAT_ARMENIA_BORDERS_3_5.geojson", "fill-color": "#f0e68c", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_3_6", "geojsonFile": "GREAT_ARMENIA_BORDERS_3_6.geojson", "fill-color": "#adff2f", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_3_7", "geojsonFile": "GREAT_ARMENIA_BORDERS_3_7.geojson", "fill-color": "#32cd32", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_4", "geojsonFile": "GREAT_ARMENIA_BORDERS_4.geojson", "fill-color": "#008000", "fill-opacity": 0.5 },
+        { "id": "great_armenia_borders_5", "geojsonFile": "GREAT_ARMENIA_BORDERS_5.geojson", "fill-color": "#006400", "fill-opacity": 0.5 }
+      ],
+      "lines": [
+        { "id": "line_great_armenia_2", "geojsonFile": "LINE_GREAT_ARMENIA_2.geojson", "line-color": "#0000ff", "line-width": 2 },
+        { "id": "line_great_armenia_3", "geojsonFile": "LINE_GREAT_ARMENIA_3.geojson", "line-color": "#1e90ff", "line-width": 2 },
+        { "id": "line_great_armenia_4", "geojsonFile": "LINE_GREAT_ARMENIA_4.geojson", "line-color": "#4169e1", "line-width": 2 },
+        { "id": "line_great_armenia_5", "geojsonFile": "LINE_GREAT_ARMENIA_5.geojson", "line-color": "#00bfff", "line-width": 2 },
+        { "id": "line_great_armenia_6", "geojsonFile": "LINE_GREAT_ARMENIA_6.geojson", "line-color": "#87cefa", "line-width": 2 }
+      ],
+      "points": [
+        { "id": "great_armenia_cities", "geojsonFile": "GREAT_ARMENIA_CITIES.geojson", "circle-color": "#ff1493", "circle-radius": 6 },
+        { "id": "great_armenia_battles", "geojsonFile": "GREAT_ARMENIA_BATTLES_V2.geojson", "circle-color": "#8b0000", "circle-radius": 8 }
+      ]
+    }
+  ]
+  

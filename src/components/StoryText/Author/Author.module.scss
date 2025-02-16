@@ -26,12 +26,14 @@
 
             .footerSubheading {
                 font-style: italic;
+                text-align: start;
             }
 
             p {
                 font-family: "Cormorant Garamond", serif;
                 color: $bg-color;
                 font-weight: 500;
+                text-align: start;
             }
         }
     }

@@ -22,11 +22,11 @@
     }
 
     &::before {
-        left: 1rem;
+        left: calc(-60px - .5rem);
     }
 
     &::after {
-        right: 1rem;
+        right: calc(-60px - .5rem); // Keeps 1rem space from the number
     }
 }
 
