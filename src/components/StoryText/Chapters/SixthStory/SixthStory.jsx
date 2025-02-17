@@ -3,9 +3,9 @@ import StoryHeading from '../../StoryHeading/StoryHeading';
 import ImgBlock from '../../Blocks/ImgBlock';
 import QuoteBlock from '../../Blocks/QuoteBlock';
 
-const SixthStory = () => {
+const SixthStory = ({ref}) => {
   return (
-    <div className={storyStyles.storyOuter}>
+    <div className={storyStyles.storyOuter} ref={ref}>
       <StoryHeading 
         number='VI'
         subhead='Apogee of the borders'

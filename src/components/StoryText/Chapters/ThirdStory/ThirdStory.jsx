@@ -3,9 +3,9 @@ import StoryHeading from '../../StoryHeading/StoryHeading';
 import ImgBlock from '../../Blocks/ImgBlock';
 import QuoteBlock from '../../Blocks/QuoteBlock';
 
-const ThirdStory = () => {
+const ThirdStory = ({ref}) => {
   return (
-    <div className={storyStyles.storyOuter}>
+    <div className={storyStyles.storyOuter} ref={ref}>
       <StoryHeading 
         number='III'
         subhead='Nemesis — Parthia'

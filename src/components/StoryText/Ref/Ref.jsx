@@ -1,8 +1,8 @@
 import styles from './Ref.module.scss'
 
-const Ref = () => {
+const Ref = ({ref}) => {
   return (
-    <div className={styles.ref}>
+    <div className={styles.ref} ref={ref}>
         <h1 className={styles.footerHeading}>
             References
         </h1>

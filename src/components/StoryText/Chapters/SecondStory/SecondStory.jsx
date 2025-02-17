@@ -3,9 +3,9 @@ import StoryHeading from '../../StoryHeading/StoryHeading';
 import ImgBlock from '../../Blocks/ImgBlock';
 import QuoteBlock from '../../Blocks/QuoteBlock';
 
-const SecondStory = () => {
+const SecondStory = ({ref}) => {
   return (
-    <div className={storyStyles.storyOuter}>
+    <div className={storyStyles.storyOuter} ref={ref}>
       <StoryHeading 
         number='II'
         subhead='First campaign at Cappadocia'

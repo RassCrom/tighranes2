@@ -1,8 +1,8 @@
 import styles from './Author.module.scss'
 
-const Author = () => {
+const Author = ({ref}) => {
   return (
-    <div className={styles.author}>
+    <div className={styles.author} ref={ref}>
       <h1 className={styles.footerHeading}>
           Author
       </h1>
