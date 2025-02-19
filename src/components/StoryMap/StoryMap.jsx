@@ -242,17 +242,16 @@ const addLayer = async (map, layer, type) => {
         layout: { visibility: "visible" },
       };
 
-      if (type === "fill") {
+      if (type === "circle") {
         layerConfig.paint = {
-          "fill-color": [
-            "match",
-            ["get", "Name"],
-            ...Object.entries(countryColor).flat(),
-            "#808080"
-          ],
-          "fill-outline-color": "#5a3e1b",
-          "fill-opacity": 0
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3, 10, 6, 15, 10],
+          "circle-color": "#fff",
+          "circle-opacity": 0.8,
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#000",
+          "circle-stroke-opacity": 0.5
         };
+        
       } else if (type === "line") {
         layerConfig.layout = {
           'line-join': 'round',
@@ -263,15 +262,17 @@ const addLayer = async (map, layer, type) => {
           "line-width": 8,
           "line-opacity": 0
         };
-      } else if (type === "circle") {
+      } else if (type === "fill") {
         layerConfig.paint = {
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3, 10, 6, 15, 10],
-          "circle-color": "#fff",
-          "circle-opacity": 0.8,
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#000",
-          "circle-stroke-opacity": 0.5
-        };
+        "fill-color": [
+          "match",
+          ["get", "Name"],
+          ...Object.entries(countryColor).flat(),
+          "#808080"
+        ],
+        "fill-outline-color": "#5a3e1b",
+        "fill-opacity": 0
+      };
       }
 
       map.addLayer(layerConfig);

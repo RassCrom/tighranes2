@@ -16,11 +16,8 @@
     "howler": "^2.2.4",
     "lightgallery": "^2.8.2",
     "mapbox-gl": "^3.9.4",
-    "maplibre-theme": "^0.2.0",
-    "plotteus": "^1.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-toastify": "^11.0.3",
     "sass": "^1.84.0",
     "swiper": "^11.2.2",
     "tippy.js": "^6.3.7"
