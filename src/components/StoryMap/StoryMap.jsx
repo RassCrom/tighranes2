@@ -7,7 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import './StoryMap.scss';
 import styles from './StoryMap.module.scss';
 
-import { countryColor } from "./coutnryColor";
+import { countryColor } from "./countryColor";
 
 const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -63,9 +63,20 @@ const StoryMap = () => {
     map.dragRotate.disable()
 
     map.on('load', async () => {
-      await addLayersSequentially(map, data[0].points, "circle");
-      await addLayersSequentially(map, data[0].lines, "line");
-      await addLayersSequentially(map, data[0].polygons, "fill");
+      // Preload all data first
+      const allLayers = [
+        ...data[0].polygons.map(layer => ({ ...layer, type: 'fill' })),
+        ...data[0].lines.map(layer => ({ ...layer, type: 'line' })),
+        ...data[0].points.map(layer => ({ ...layer, type: 'circle' }))
+      ];
+    
+      // Load all sources in parallel
+      await Promise.all(allLayers.map(layer => preloadSource(map, layer)));
+    
+      // Add layers in visual order after all sources are ready
+      addAllLayersInOrder(map, data[0].polygons, 'fill');
+      addAllLayersInOrder(map, data[0].lines, 'line');
+      addAllLayersInOrder(map, data[0].points, 'circle');
     });
 
     let isFlying = false;
@@ -226,75 +237,68 @@ const StoryMap = () => {
   );
 };
 
-const addLayersSequentially = async (map, layers, type) => {
-  for (const layer of layers) {
-    await addLayer(map, layer, type);
-  }
-};
-
-const addLayer = async (map, layer, type) => {
+// Helper function to preload sources
+const preloadSource = async (map, layer) => {
   try {
     const response = await axios.get(`/layers/${layer.geojsonFile}`);
-    const data = response.data;
-
     if (!map.getSource(layer.id)) {
-      map.addSource(layer.id, { type: "geojson", data });
-
-      let layerConfig = {
-        id: `${layer.id}-layer`,
-        type,
-        source: layer.id,
-        layout: { visibility: "visible" },
-      };
-
-      if (type === "circle") {
-        layerConfig = {
-          ...layerConfig,
-          slot: 'top'
-        }
-        layerConfig.paint = {
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3, 10, 6, 15, 10],
-          "circle-color": "#fff",
-          "circle-opacity": 0.8,
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#000",
-          "circle-stroke-opacity": 0.5
-        };
-        
-      } else if (type === "line") {
-        layerConfig = {
-          ...layerConfig,
-          slot: 'middle'
-        }
-        layerConfig.layout = {
-          'line-join': 'round',
-          'line-cap': 'round',
-        }
-        layerConfig.paint = {
-          "line-color": "#888",
-          "line-width": 8,
-          "line-opacity": 0
-        };
-      } else if (type === "fill") {
-        layerConfig.paint = {
-        "fill-color": [
-          "match",
-          ["get", "Name"],
-          ...Object.entries(countryColor).flat(),
-          "#808080"
-        ],
-        "fill-outline-color": "#5a3e1b",
-        "fill-opacity": 0
-      };
-      }
-
-      map.addLayer(layerConfig);
+      map.addSource(layer.id, { type: 'geojson', data: response.data });
     }
-    return Promise.resolve();
   } catch (error) {
-    console.error("Error loading GeoJSON:", error);
+    console.error('Error preloading source:', error);
   }
 };
 
+// Helper function to add layers quickly after preloading
+const addAllLayersInOrder = (map, layers, type) => {
+  layers.forEach(layer => {
+    if (!map.getLayer(`${layer.id}-layer`)) {
+      const layerConfig = createLayerConfig(layer, type);
+      map.addLayer(layerConfig);
+    }
+  });
+};
+
+// Layer configuration factory
+const createLayerConfig = (layer, type) => {
+  const baseConfig = {
+    id: `${layer.id}-layer`,
+    type,
+    source: layer.id,
+    layout: { visibility: 'visible' }
+  };
+
+  const paintConfigs = {
+    circle: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 3, 10, 6, 15, 10],
+      'circle-color': '#fff',
+      'circle-opacity': 0.8,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#000'
+    },
+    line: {
+      'line-color': '#888',
+      'line-width': 8,
+      'line-opacity': 0
+    },
+    fill: {
+      'fill-color': ['match', ['get', 'Name'], ...Object.entries(countryColor).flat(), '#808080'],
+      'fill-outline-color': '#5a3e1b',
+      'fill-opacity': 0
+    }
+  };
+  const layoutConfigs = {
+    circle: {
+    },
+    line: {
+      'line-join': 'round',
+      'line-cap': 'round',
+    },
+    fill: {
+    }
+  };
+
+  return { ...baseConfig, paint: paintConfigs[type], layout: layoutConfigs[type] };
+};
 
 export default StoryMap;
