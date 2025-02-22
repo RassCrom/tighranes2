@@ -63,9 +63,9 @@ const StoryMap = () => {
     map.dragRotate.disable()
 
     map.on('load', async () => {
-      await addLayersSequentially(map, data[0].polygons, "fill");
-      await addLayersSequentially(map, data[0].lines, "line");
       await addLayersSequentially(map, data[0].points, "circle");
+      await addLayersSequentially(map, data[0].lines, "line");
+      await addLayersSequentially(map, data[0].polygons, "fill");
     });
 
     let isFlying = false;
@@ -240,7 +240,7 @@ const addLayer = async (map, layer, type) => {
     if (!map.getSource(layer.id)) {
       map.addSource(layer.id, { type: "geojson", data });
 
-      const layerConfig = {
+      let layerConfig = {
         id: `${layer.id}-layer`,
         type,
         source: layer.id,
@@ -248,6 +248,10 @@ const addLayer = async (map, layer, type) => {
       };
 
       if (type === "circle") {
+        layerConfig = {
+          ...layerConfig,
+          slot: 'top'
+        }
         layerConfig.paint = {
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3, 10, 6, 15, 10],
           "circle-color": "#fff",
@@ -258,6 +262,10 @@ const addLayer = async (map, layer, type) => {
         };
         
       } else if (type === "line") {
+        layerConfig = {
+          ...layerConfig,
+          slot: 'middle'
+        }
         layerConfig.layout = {
           'line-join': 'round',
           'line-cap': 'round',
