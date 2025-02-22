@@ -35,7 +35,7 @@ const MAP_SETTINGS = {
 
 mapboxgl.accessToken = mapboxToken;
 
-const StoryMap = () => {
+const StoryMap = ({ openMap }) => {
   const mapRef = useRef(null);
   const { data } = useFetchData('/data/layers.json');
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -46,6 +46,30 @@ const StoryMap = () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func(...args), wait);
     };
+  };
+  
+  const flyToLayerBounds = (map, layerId, zoom) => {
+    const features = map.queryRenderedFeatures({ layers: [layerId] });
+    if (features.length > 0) {
+        const bounds = new mapboxgl.LngLatBounds();
+        features.filter(name => name.properties['Name']=== 'Great Armenia').forEach(feature => {
+            if (feature.geometry.type === 'Polygon') {
+                feature.geometry.coordinates[0].forEach(coord => {
+                    bounds.extend(coord);
+                });
+            }
+        });
+        
+        map.flyTo({
+            center: bounds.getCenter(),
+            zoom: zoom || 5.3,
+            duration: 1000,
+            essential: true
+        });
+    } else {
+        console.log('Layer not found');
+    }
+
   };
 
   useEffect(() => {
@@ -60,7 +84,7 @@ const StoryMap = () => {
 
     map.addControl(new mapboxgl.NavigationControl());
     map.addControl(new mapboxgl.FullscreenControl());
-    map.dragRotate.disable()
+    map.dragRotate.disable();
 
     map.on('load', async () => {
       // Preload all data first
@@ -70,159 +94,205 @@ const StoryMap = () => {
         ...data[0].points.map(layer => ({ ...layer, type: 'circle' }))
       ];
     
-      // Load all sources in parallel
       await Promise.all(allLayers.map(layer => preloadSource(map, layer)));
     
       // Add layers in visual order after all sources are ready
       addAllLayersInOrder(map, data[0].polygons, 'fill');
       addAllLayersInOrder(map, data[0].lines, 'line');
       addAllLayersInOrder(map, data[0].points, 'circle');
+
+      const setupLayerInteractivity = (map, layerId, type) => {
+        const clickHandler = (e) => {
+          const currentOpacity = map.getPaintProperty(`${layerId}-layer`, `${type}-opacity`);
+          if (currentOpacity > 0) {
+            const coordinates = e.lngLat;
+            const countryName = e.features[0].properties.Name;
+          
+            new mapboxgl.Popup({
+              className: 'custom-popup',
+              offset: -77
+            })
+              .setLngLat(coordinates)
+              .setHTML(`<div class="popup-content"><h3 class="country-name">${countryName}</h3></div>`)
+              .addTo(map);
+          }
+        };
+      
+        const mouseEnterHandler = () => {
+          const currentOpacity = map.getPaintProperty(`${layerId}-layer`, `${type}-opacity`);
+          if (currentOpacity > 0) {
+            map.getCanvas().style.cursor = 'pointer';
+          }
+        };
+      
+        const mouseLeaveHandler = () => {
+          map.getCanvas().style.cursor = '';
+        };
+      
+        map.on('click', `${layerId}-layer`, clickHandler);
+        map.on('mouseenter', `${layerId}-layer`, mouseEnterHandler);
+        map.on('mouseleave', `${layerId}-layer`, mouseLeaveHandler);
+      };
+      
+      setupLayerInteractivity(map, 'great_armenia_cities', 'circle');
+      [...data[0].polygons].forEach((id) => {
+        setupLayerInteractivity(map, id.id, 'fill')
+      });
+
     });
 
     let isFlying = false;
 
-  const handleScroll = () => {
-    if (isFlying) return; // Prevent interruptions
+    const handleScroll = () => {
+      if (isFlying) return; // Prevent interruptions
 
-    requestAnimationFrame(() => {
-      isFlying = true;
-      const position = window.scrollY;
-      setScrollPosition(position);
+      requestAnimationFrame(() => {
+        isFlying = true;
+        const position = window.scrollY;
+        setScrollPosition(position);
 
-      if (position < 1100) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      } else if (position >= 1100 && position <= 6090) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 1);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      } else if (position > 6090 && position <= 8156) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 1);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 1);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      } else if (position > 8156 && position <= 9500) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 1);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 1);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      } else if (position > 9500 && position <= 11490) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 1);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 1);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      } else if (position > 11490 && position <= 13000) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 1);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 1);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      } else if (position > 13000 && position <= 14523) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 1);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 1);
-      } else if (position > 14523 && position <= 16901) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 1);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      } else if (position > 16901) {
-        map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
-        map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 1);
-        map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
-        map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-      }
+        if (position < 1100) {
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        } else if (position >= 1100 && position <= 6090) {
+          flyToLayerBounds(map, 'great_armenia_borders_1-layer');
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 1);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        } else if (position > 6090 && position <= 8156) {
+          flyToLayerBounds(map, 'great_armenia_borders_2-layer', 4.5);
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 1);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 1);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        } else if (position > 8156 && position <= 9500) {
+          flyToLayerBounds(map, 'great_armenia_borders_3_7-layer');
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 1);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 1);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        } else if (position > 9500 && position <= 11490) {
+          flyToLayerBounds(map, 'great_armenia_borders_4-layer');
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 1);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 1);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        } else if (position > 11490 && position <= 13000) {
+          flyToLayerBounds(map, 'great_armenia_borders_5-layer', 4.8);
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 1);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 1);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        } else if (position > 13000 && position <= 14523) {
+          flyToLayerBounds(map, 'great_armenia_borders_6-layer', 4.3);
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 1);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 1);
+        } else if (position > 14523 && position <= 16901) {
+          flyToLayerBounds(map, 'great_armenia_borders_7-layer', 4.5);
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 1);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 0);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        } else if (position > 16901) {
+          flyToLayerBounds(map, 'great_armenia_borders_8-layer', 5);
+          map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_3_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_4-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_5-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_6-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_7-layer', 'fill-opacity', 0);
+          map.setPaintProperty('great_armenia_borders_8-layer', 'fill-opacity', 1);
+          map.setPaintProperty('line_great_armenia_2-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_3-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
+          map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
+        }
 
-      setTimeout(() => (isFlying = false), 200);
-    });
-  };
-  const debouncedHandleScroll = debounce(handleScroll, 150);
+        setTimeout(() => (isFlying = false), 200);
+      });
+    };
+    const debouncedHandleScroll = debounce(handleScroll, 150);
 
-  window.addEventListener('scroll', debouncedHandleScroll);
+    window.addEventListener('scroll', debouncedHandleScroll);
 
     return () => {
       map.remove();
@@ -231,7 +301,7 @@ const StoryMap = () => {
   }, [data]);
 
   return (
-    <div className={styles.map__outer}>
+    <div className={`${styles.map__outer}  ${openMap ? 'open__map' : ''}`}>
       <div ref={mapRef} className={`map-style ${styles.mapContainer}`}></div>
     </div>
   );
@@ -259,7 +329,6 @@ const addAllLayersInOrder = (map, layers, type) => {
   });
 };
 
-// Layer configuration factory
 const createLayerConfig = (layer, type) => {
   const baseConfig = {
     id: `${layer.id}-layer`,

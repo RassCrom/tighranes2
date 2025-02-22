@@ -22,7 +22,7 @@ const ImgBlock = ({ img, caption, size }) => {
     };
   }, []);
 
-  const bigImg = size === 'big' ? { maxWidth: '100%' } : {};
+  const bigImg = size === 'big' ? { maxWidth: '80%' } : {};
 
   return (
     <div className={styles.img} style={bigImg} ref={galleryRef}>

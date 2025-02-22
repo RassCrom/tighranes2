@@ -5,6 +5,7 @@ import StoryMap from "../../components/StoryMap/StoryMap";
 
 const StoryPage = () => {
   const [showGoUp, setShowGoUp] = useState(false);
+  const [openMap, setOpenMap] = useState(false);
   const handleGoUp = () => window.scrollTo({ top: 0, behavior: "smooth" })
 
   useEffect(() => {
@@ -21,9 +22,15 @@ const StoryPage = () => {
       <div 
         className={`${styles.goUp} ${!showGoUp && styles.hidden__goUp}`}
         onClick={handleGoUp}
-      ></div> 
+      ></div>
+      <button 
+        className={`${styles.openMap}`}
+        onClick={() => setOpenMap(prev => !prev)}
+      >
+        <img src="/public/images/map.png" />
+      </button>
       <StoryText />
-      <StoryMap />
+      <StoryMap openMap={openMap} />
     </div>
   );
 };

@@ -15,7 +15,7 @@ const FourthStory = ({ref}) => {
         <p className={storyStyles.text}>
           After crossing the Tigris River, Tigran II captured the key cities of Edessa and Nisibis, bringing his domains close to the lands controlled by the Seleucids. In the western direction, the Armenian forces faced little resistance. After taking Commagene, they entered Syria unopposed. Historian R. L. Manaseryan, relying on accounts by Josephus, Dio Cassius, and Plutarch, notes that in 83 BCE, the population of Syria voluntarily invited Tigran II, and his ascension to the throne was peaceful. Plutarch describes Tigran's power, who by then had assumed the title of "King of Kings".
         </p>
-        <ImgBlock img='/images/' caption='Info Nissibiss' />
+        <ImgBlock img='/images/nisibis-b.png' caption='Info Nissibiss' size='big' />
         <p className={storyStyles.text}>
             The fall of the Seleucid Empire and the removal of its ruling dynasty by local aristocracy raised the question of new leadership. Initially, candidates such as the Egyptian Ptolemies and Mithridates VI Eupator were considered, but Tigran II was chosen. In 83 BCE, he was proclaimed king of Syria in the Seleucid capital of Antioch. The Armenian army continued its advance southward, capturing Lebanon (Phoenicia) and reaching the borders of Palestine. According to the Greco-Roman author Appian, Armenian forces even advanced as far as Egypt.
         </p>

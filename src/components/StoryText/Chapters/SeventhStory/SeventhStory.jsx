@@ -17,11 +17,11 @@ const SeventhStory = ({ref}) => {
         <p className={storyStyles.text}>
             One of the first major battles was the Battle of Tigranakert, the new capital of Armenia built by Tigranes. In 69 BC, Roman forces besieged the city. Despite the numerical superiority of the Armenian army, Lucullus used tactics that allowed him to secure victory. The Armenian troops, composed of diverse units, were unable to withstand the disciplined Roman legions. The fall of Tigranakert was a heavy blow to Tigranes, but he did not surrender and continued the fight. 
         </p>
-        <ImgBlock img='/images/tigranakert-battle.gif' caption='Tigranakert battle' />
+        <ImgBlock img='/images/tigran-b.png' caption='Tigranakert battle' size='big' />
         <p className={storyStyles.text}>
             After the defeat at Tigranakert, Tigranes retreated to the old capital of Armenia—Artaxata. In 68 BC, a new battle took place here. Lucullus, confident in his victory, marched on Artaxata, but this time the Armenian forces put up fierce resistance. Harsh climatic conditions and supply difficulties weakened the Romans, forcing them to retreat. This victory temporarily halted the Roman advance into Armenia and gave Tigranes the opportunity to regroup his forces.
         </p>
-        <ImgBlock img='/images/' caption='Info Artaxat' />
+        <ImgBlock img='/images/artaxata-b.png' caption='Info Artaxat' size='big' />
         <p className={storyStyles.text}>
             Taking advantage of the respite, Tigranes organized a counteroffensive in Asia Minor. He sought to reclaim lost territories and weaken Roman influence in the region. Armenian forces carried out swift raids, attacking Roman garrisons and cities allied with Rome. These actions caused panic among Rome's allies and forced the Romans to reconsider their strategy. However, Tigranes' successes were temporary, as the Romans were already preparing a new strike. 
         </p>

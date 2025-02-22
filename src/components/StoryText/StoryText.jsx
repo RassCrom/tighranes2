@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import Author from './Author/Author';
 import ContentStory from './Chapters/ContentStory/ContentStory';
 import FirstStory from './Chapters/FirstStory/FirstStory';

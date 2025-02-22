@@ -6,6 +6,7 @@
 html, body {
     margin: 0;
     padding: 0;
+    border: 0;
     box-sizing: border-box;
 }
 
@@ -29,4 +30,8 @@ html, body {
   background-color: $bg-color;
 
   scroll-behavior: smooth;
+}
+
+.open__map {
+    transform: translateY(0) !important;
 }

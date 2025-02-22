@@ -19,7 +19,6 @@ const EighthStory = ({ref}) => {
         </p>
         <ImgBlock img='/images/artavasdes-2.png' caption='Artvasdes II' />
       </div>
-      <div className={storyStyles.outerDivider}></div>
     </div>
   );
 };

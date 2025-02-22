@@ -34,3 +34,41 @@
     transform: translateY(0);
 }
 
+.openMap {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 1.2rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  background: $accent-color;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  z-index: 101;
+
+  &:hover {
+    opacity: .5;
+    transform: scale(1.05);
+  }
+
+  &.active {
+    background: rgba(0, 150, 255, 0.6);
+    transform: scale(1.1);
+  }
+
+  img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 905px) {
+    .openMap {
+        visibility: visible;
+    }
+}
