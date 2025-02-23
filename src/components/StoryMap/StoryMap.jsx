@@ -87,11 +87,6 @@ const StoryMap = ({ openMap }) => {
   };
 
   useEffect(() => {
-    
-    console.log(scrollPosition)
-  }, [scrollPosition])
-
-  useEffect(() => {
     if (!data) return;
 
     const map = new mapboxgl.Map({
@@ -110,7 +105,22 @@ const StoryMap = ({ openMap }) => {
         type: 'geojson',
         data: battles
       });
+
+      // Preload all data first
+      const allLayers = [
+        ...data[0].polygons.map(layer => ({ ...layer, type: 'fill' })),
+        ...data[0].lines.map(layer => ({ ...layer, type: 'line' })),
+        ...data[0].points.map(layer => ({ ...layer, type: 'circle' }))
+      ];
     
+      await Promise.all(allLayers.map(layer => preloadSource(map, layer)));
+    
+      // Add layers in visual order after all sources are ready
+      addAllLayersInOrder(map, data[0].polygons, 'fill');
+      addAllLayersInOrder(map, data[0].lines, 'line');
+      addAllLayersInOrder(map, data[0].points, 'circle');
+
+          
       map.loadImage('/images/sword.png', (error, image) => {
         if (error) throw error;
         
@@ -130,21 +140,6 @@ const StoryMap = ({ openMap }) => {
             }
         });
       });
-    
-
-      // Preload all data first
-      const allLayers = [
-        ...data[0].polygons.map(layer => ({ ...layer, type: 'fill' })),
-        ...data[0].lines.map(layer => ({ ...layer, type: 'line' })),
-        ...data[0].points.map(layer => ({ ...layer, type: 'circle' }))
-      ];
-    
-      await Promise.all(allLayers.map(layer => preloadSource(map, layer)));
-    
-      // Add layers in visual order after all sources are ready
-      addAllLayersInOrder(map, data[0].polygons, 'fill');
-      addAllLayersInOrder(map, data[0].lines, 'line');
-      addAllLayersInOrder(map, data[0].points, 'circle');
 
       const popup = new mapboxgl.Popup({
         className: 'custom-popup',
