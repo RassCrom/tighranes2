@@ -27,7 +27,7 @@ const StoryPage = () => {
         className={`${styles.openMap}`}
         onClick={() => setOpenMap(prev => !prev)}
       >
-        <img src="/public/images/map.png" />
+        <img src="/images/map.png" />
       </button>
       <StoryText />
       <StoryMap openMap={openMap} />

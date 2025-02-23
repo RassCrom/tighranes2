@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import axios from "axios";
 import { useFetchData } from '../../hooks/useFetchData';
+import battles from '../../assets/great_armenia_battle_v3.json'
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import './StoryMap.scss';
@@ -34,6 +35,19 @@ const MAP_SETTINGS = {
 };
 
 mapboxgl.accessToken = mapboxToken;
+
+function addSymbolLayer(map) {
+  map.addLayer({
+      'id': 'points',
+      'type': 'symbol',
+      'source': 'geojson-source',
+      'layout': {
+          'icon-image': 'custom-icon',
+          'icon-size': 1.5, // Adjust the size as needed
+          'icon-allow-overlap': true
+      }
+  });
+}
 
 const StoryMap = ({ openMap }) => {
   const mapRef = useRef(null);
@@ -73,6 +87,11 @@ const StoryMap = ({ openMap }) => {
   };
 
   useEffect(() => {
+    
+    console.log(scrollPosition)
+  }, [scrollPosition])
+
+  useEffect(() => {
     if (!data) return;
 
     const map = new mapboxgl.Map({
@@ -87,6 +106,32 @@ const StoryMap = ({ openMap }) => {
     map.dragRotate.disable();
 
     map.on('load', async () => {
+      map.addSource('armenia-battles', {
+        type: 'geojson',
+        data: battles
+      });
+    
+      map.loadImage('/images/sword.png', (error, image) => {
+        if (error) throw error;
+        
+        if (!map.hasImage('custom-icon')) {
+            map.addImage('custom-icon', image);
+        }
+    
+        map.addLayer({
+            'id': 'armenia-battles-layer',
+            'type': 'symbol',
+            'source': 'armenia-battles',
+            'layout': {
+                'icon-image': 'custom-icon',
+                'icon-size': .25,
+                'icon-allow-overlap': true,
+                'icon-offset': [60, 0]
+            }
+        });
+      });
+    
+
       // Preload all data first
       const allLayers = [
         ...data[0].polygons.map(layer => ({ ...layer, type: 'fill' })),
@@ -101,26 +146,29 @@ const StoryMap = ({ openMap }) => {
       addAllLayersInOrder(map, data[0].lines, 'line');
       addAllLayersInOrder(map, data[0].points, 'circle');
 
+      const popup = new mapboxgl.Popup({
+        className: 'custom-popup',
+        offset: -85
+      });
+      
       const setupLayerInteractivity = (map, layerId, type) => {
         const clickHandler = (e) => {
           const currentOpacity = map.getPaintProperty(`${layerId}-layer`, `${type}-opacity`);
-          if (currentOpacity > 0) {
+          if (currentOpacity > 0 || type === 'icon') {
+            if (popup.isOpen()) popup.remove();
+            
             const coordinates = e.lngLat;
-            const countryName = e.features[0].properties.Name;
-          
-            new mapboxgl.Popup({
-              className: 'custom-popup',
-              offset: -77
-            })
-              .setLngLat(coordinates)
-              .setHTML(`<div class="popup-content"><h3 class="country-name">${countryName}</h3></div>`)
+            const countryName = e.features[0].properties.Name || e.features[0].properties.name;
+      
+            popup.setLngLat(coordinates)
+              .setHTML(`<div class="popup-content"><h3 class="country-name">${countryName} ${type === 'icon' ? e.features[0].properties.date : ''}</h3></div>`)
               .addTo(map);
           }
         };
       
         const mouseEnterHandler = () => {
           const currentOpacity = map.getPaintProperty(`${layerId}-layer`, `${type}-opacity`);
-          if (currentOpacity > 0) {
+          if (currentOpacity > 0 || type === 'icon') {
             map.getCanvas().style.cursor = 'pointer';
           }
         };
@@ -134,10 +182,11 @@ const StoryMap = ({ openMap }) => {
         map.on('mouseleave', `${layerId}-layer`, mouseLeaveHandler);
       };
       
-      setupLayerInteractivity(map, 'great_armenia_cities', 'circle');
       [...data[0].polygons].forEach((id) => {
-        setupLayerInteractivity(map, id.id, 'fill')
+        setupLayerInteractivity(map, id.id, 'fill');
       });
+      setupLayerInteractivity(map, 'great_armenia_cities', 'circle');
+      setupLayerInteractivity(map, 'armenia-battles', 'icon');
 
     });
 
@@ -225,7 +274,7 @@ const StoryMap = ({ openMap }) => {
           map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 1);
           map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
           map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-        } else if (position > 11490 && position <= 13000) {
+        } else if (position > 12100 && position <= 13400) {
           flyToLayerBounds(map, 'great_armenia_borders_5-layer', 4.8);
           map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
           map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
@@ -240,7 +289,7 @@ const StoryMap = ({ openMap }) => {
           map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
           map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 1);
           map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-        } else if (position > 13000 && position <= 14523) {
+        } else if (position > 13400 && position <= 15184) {
           flyToLayerBounds(map, 'great_armenia_borders_6-layer', 4.3);
           map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
           map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
@@ -255,7 +304,7 @@ const StoryMap = ({ openMap }) => {
           map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
           map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
           map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 1);
-        } else if (position > 14523 && position <= 16901) {
+        } else if (position > 15184 && position <= 18884) {
           flyToLayerBounds(map, 'great_armenia_borders_7-layer', 4.5);
           map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
           map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
@@ -270,7 +319,7 @@ const StoryMap = ({ openMap }) => {
           map.setPaintProperty('line_great_armenia_4-layer', 'line-opacity', 0);
           map.setPaintProperty('line_great_armenia_5-layer', 'line-opacity', 0);
           map.setPaintProperty('line_great_armenia_6-layer', 'line-opacity', 0);
-        } else if (position > 16901) {
+        } else if (position > 18884) {
           flyToLayerBounds(map, 'great_armenia_borders_8-layer', 5);
           map.setPaintProperty('great_armenia_borders_1-layer', 'fill-opacity', 0);
           map.setPaintProperty('great_armenia_borders_2-layer', 'fill-opacity', 0);
