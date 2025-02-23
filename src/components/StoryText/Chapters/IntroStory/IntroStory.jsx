@@ -4,6 +4,8 @@ import ArmFlag from '/images/arm-flag.png';
 import FloatingArrow from '/images/spear-arr.png';
 
 const IntroStory = () => {
+  const handleScrollToContent = () => window.scrollTo({top: 750, behavior: 'smooth'});
+
   return (
     <>
       <div className={styles.intro}>
@@ -22,7 +24,7 @@ const IntroStory = () => {
           </p>
         </div>
         <div className={storyStyles.text}>
-          <img className={styles.floatingArrow} src={FloatingArrow} alt="arrow down" />
+          <img onClick={handleScrollToContent} className={styles.floatingArrow} src={FloatingArrow} alt="arrow down" />
         </div>
       </div>
     </>
