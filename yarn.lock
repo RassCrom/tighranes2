@@ -1973,6 +1973,11 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+mapbox-gl-animated-popup@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/mapbox-gl-animated-popup/-/mapbox-gl-animated-popup-0.4.0.tgz#e3426c54926e47120007c92e87681e0ed309db88"
+  integrity sha512-y7xP+xbcR5LfzpUHihWOa2ydIJCGUW7jNg0q1vi5PINc6q2hmB7Exnp+F4f1Kgb1WZj0WyZGjQC0WgTX7wuwgw==
+
 mapbox-gl@^3.9.4:
   version "3.9.4"
   resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-3.9.4.tgz#a80777d4f57267e021001337b712ac2c28cfd15e"

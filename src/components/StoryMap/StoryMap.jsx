@@ -4,6 +4,7 @@ import axios from "axios";
 import { useFetchData } from '../../hooks/useFetchData';
 import battles from '../../assets/great_armenia_battle_v3.json'
 import LegendControl from 'mapboxgl-legend';
+import AnimatedPopup from 'mapbox-gl-animated-popup';
 
 import 'mapboxgl-legend/dist/style.css';
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -150,9 +151,29 @@ const StoryMap = ({ openMap }) => {
         });
       });
 
-      const popup = new mapboxgl.Popup({
+      const popup = new AnimatedPopup({
         className: 'custom-popup',
-        offset: -85
+        offset: {
+          'top': [0, 10],
+          'top-left': [0, 10],
+          'top-right': [0, 10],
+          'bottom': [0, -10],
+          'bottom-left': [0, -10],
+          'bottom-right': [0, -10],
+          'left': [10, 0],
+          'right': [-10, 0]
+        },
+        anchor: 'bottom',
+        openingAnimation: {
+            duration: 1000,
+            easing: 'easeOutElastic',
+            transform: 'scale'
+        },
+        closingAnimation: {
+            duration: 300,
+            easing: 'easeInBack',
+            transform: 'scale'
+        }
       });
       
       const setupLayerInteractivity = (map, layerId, type) => {
@@ -162,10 +183,35 @@ const StoryMap = ({ openMap }) => {
             if (popup.isOpen()) popup.remove();
             
             const coordinates = e.lngLat;
-            const countryName = e.features[0].properties.Name || e.features[0].properties.name;
-      
+            const feature = e.features[0].properties;
+            const countryName = feature.Name || feature.name;
+            
+            let popupContent = '';
+            
+            if (type === 'icon') {
+              // This is a battle feature with extended information
+              const battleName = feature.name || 'Battle';
+              const battleDate = feature.date || '';
+              const battleDescription = feature.description || '';
+              const battleImage = feature.image || '';
+              
+              popupContent = `
+                <div class="popup-content battle-popup">
+                  ${battleImage ? `<div class="battle-image"><img src="${battleImage}" alt="${battleName}" /></div>` : ''}
+                  <div class="battle-info">
+                    <h3 class="battle-name">${battleName}</h3>
+                    ${battleDate ? `<div class="battle-date">${battleDate}</div>` : ''}
+                    ${battleDescription ? `<div class="battle-description">${battleDescription}</div>` : ''}
+                  </div>
+                </div>
+              `;
+            } else {
+              // Regular country/region popup
+              popupContent = `<div class="popup-content"><h3 class="country-name">${countryName}</h3></div>`;
+            }
+            
             popup.setLngLat(coordinates)
-              .setHTML(`<div class="popup-content"><h3 class="country-name">${countryName} ${type === 'icon' ? e.features[0].properties.date : ''}</h3></div>`)
+              .setHTML(popupContent)
               .addTo(map);
           }
         };

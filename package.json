@@ -16,6 +16,7 @@
     "howler": "^2.2.4",
     "lightgallery": "^2.8.2",
     "mapbox-gl": "^3.9.4",
+    "mapbox-gl-animated-popup": "^0.4.0",
     "mapboxgl-legend": "^1.15.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -33,6 +33,16 @@
 
 // Add to your StoryMap.scss
 .mapboxgl-popup {
+  max-width: 300px; // Add this to limit width for long content
+  
+  .mapboxgl-popup-content:before {
+    display: none;
+  }
+
+  &-tip {
+    border-top-color: $bg-color !important;
+  }
+
   &-content {
     background: $bg-color !important;
     text-align: center;
@@ -45,10 +55,11 @@
     transform: translateY(10px);
     animation: popupIn 0.3s ease-out forwards;
     
+    // Move this arrow to match the anchor position
     &::before {
       content: '';
       position: absolute;
-      top: -8px;
+      bottom: 100%; // Change from top: -8px to bottom: 100%
       left: 50%;
       transform: translateX(-50%);
       border-left: 8px solid transparent;
@@ -57,14 +68,105 @@
     }
   }
 
-  &-tip {
-    display: none;
+  // Add this to handle overflowing content
+  .popup-content {
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 5px;
+    
+    // Style scrollbar for webkit browsers
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $accent-color;
+      border-radius: 4px;
+    }
   }
-
   .mapboxgl-popup-close-button {
     top: .4rem;
     right: .4rem;
     color: $accent-color;
+  }
+}
+
+// Battle popup specific styling
+.battle-popup {
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  
+  .battle-image {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to top, $bg-color, transparent);
+    }
+  }
+  
+  .battle-info {
+    padding: 1rem 0;
+  }
+  
+  .battle-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: $heading-color;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .battle-date {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    color: $accent-color;
+    letter-spacing: 0.03em;
+  }
+  
+  .battle-description {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-top: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    
+    // Style scrollbar for webkit browsers
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $accent-color;
+      border-radius: 4px;
+    }
   }
 }
 
@@ -78,7 +180,6 @@
     transform: translateY(0);
   }
 }
-
 .country-name {
   font-family: 'Montserrat', sans-serif;
   font-size: 1.1rem;
@@ -118,3 +219,83 @@
   cursor: default;
   transition: cursor 0.3s ease;
 }
+
+.mapboxgl-ctrl-top-right {
+  .mapboxgl-ctrl-group {
+    background-color: $bg-color;
+  }
+
+  .mapboxgl-ctrl-zoom-in {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mapboxgl-ctrl-icon {
+      background-image: url('/svgs/zoom-in.svg') !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  .mapboxgl-ctrl-zoom-out {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mapboxgl-ctrl-icon {
+      background-image: url('/svgs/zoom-out.svg') !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  .mapboxgl-ctrl-shrink {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mapboxgl-ctrl-icon {
+      background-image: url('/svgs/not-full.svg') !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      width: 1rem;
+      height: 1rem;
+    }
+
+  }
+
+  .mapboxgl-ctrl-fullscreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mapboxgl-ctrl-icon {
+      background-image: url('/svgs/full.svg') !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      width: 1rem;
+      height: 1rem;
+
+    }
+  }
+
+  
+}
+
+// .mapboxgl-ctrl-legend .minimizer {
+//   background-color: $bg-color;
+  
+//   background-image: url('/svgs/layers.svg') !important;
+//   background-position: center;
+//   background-repeat: no-repeat;
+//   background-size: contain;
+
+// }
