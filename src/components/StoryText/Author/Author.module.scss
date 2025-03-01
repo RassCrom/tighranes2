@@ -24,9 +24,12 @@
             margin-bottom: 1rem;
             align-items: flex-start;
 
-            .footerSubheading {
+            .footerSubheading a {
+                font-family: "Cormorant Garamond", serif;
+                font-size: $subheading-size;
+                font-weight: 600;
+                line-height: 1.2;
                 font-style: italic;
-                text-align: start;
             }
 
             p {

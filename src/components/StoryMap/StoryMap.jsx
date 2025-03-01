@@ -46,7 +46,7 @@ function addSymbolLayer(map) {
       'source': 'geojson-source',
       'layout': {
           'icon-image': 'custom-icon',
-          'icon-size': 1.5, // Adjust the size as needed
+          'icon-size': 1.5,
           'icon-allow-overlap': true
       }
   });
@@ -189,7 +189,6 @@ const StoryMap = ({ openMap }) => {
             let popupContent = '';
             
             if (type === 'icon') {
-              // This is a battle feature with extended information
               const battleName = feature.name || 'Battle';
               const battleDate = feature.date || '';
               const battleDescription = feature.description || '';
@@ -206,7 +205,6 @@ const StoryMap = ({ openMap }) => {
                 </div>
               `;
             } else {
-              // Regular country/region popup
               popupContent = `<div class="popup-content"><h3 class="country-name">${countryName}</h3></div>`;
             }
             
@@ -234,6 +232,9 @@ const StoryMap = ({ openMap }) => {
       
       [...data[0].polygons].forEach((id) => {
         setupLayerInteractivity(map, id.id, 'fill');
+      });      
+      [...data[0].lines].forEach((id) => {
+        setupLayerInteractivity(map, id.id, 'line');
       });
       setupLayerInteractivity(map, 'great_armenia_cities', 'circle');
       setupLayerInteractivity(map, 'armenia-battles', 'icon');

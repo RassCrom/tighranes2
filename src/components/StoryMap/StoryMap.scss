@@ -33,7 +33,7 @@
 
 // Add to your StoryMap.scss
 .mapboxgl-popup {
-  max-width: 300px; // Add this to limit width for long content
+  max-width: 400px; // Add this to limit width for long content
   
   .mapboxgl-popup-content:before {
     display: none;
