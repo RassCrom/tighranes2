@@ -1,19 +1,14 @@
 [build]
-  command = "yarn build"
-  publish = "dist"
+  command = "npm run build"
+  publish = "dist"  # Adjust to your output folder
 
-# Redirect all urls to index.html for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[context.production] # For main branch
+  command = "npm run build"
+  environment = { REACT_APP_API_URL = "https://api.production.com" }
 
-# Add headers for better security and caching
-[[headers]]
-  for = "/*"
-    [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; img-src 'self' data: https://api.mapbox.com; script-src 'self' 'unsafe-inline' https://api.mapbox.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.mapbox.com;"
+[context.dev] # For dev branch
+  command = "npm run build"
+  environment = { REACT_APP_API_URL = "https://api.dev.com" }
+
+[context.deploy-preview] # For PRs
+  command = "npm run build"
