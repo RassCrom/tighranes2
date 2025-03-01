@@ -3,7 +3,9 @@ import mapboxgl from "mapbox-gl";
 import axios from "axios";
 import { useFetchData } from '../../hooks/useFetchData';
 import battles from '../../assets/great_armenia_battle_v3.json'
+import LegendControl from 'mapboxgl-legend';
 
+import 'mapboxgl-legend/dist/style.css';
 import "mapbox-gl/dist/mapbox-gl.css";
 import './StoryMap.scss';
 import styles from './StoryMap.module.scss';
@@ -96,6 +98,13 @@ const StoryMap = ({ openMap }) => {
       ...MAP_SETTINGS
     });
 
+    const legend = new LegendControl({
+      layers: ['great_armenia_borders_3_7-layer'],
+      // collapsed: true,
+      minimized: true,
+      highlight: true
+    });
+    map.addControl(legend, 'bottom-left');
     map.addControl(new mapboxgl.NavigationControl());
     map.addControl(new mapboxgl.FullscreenControl());
     map.dragRotate.disable();
